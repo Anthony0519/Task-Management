@@ -30,12 +30,7 @@ const myValidation = (req,res,next)=>{
         'string.min': 'Password must be min of 8 characters',
         'string.max': 'Password must be max of 16 characters',
       }),
-    // confirmPassword:Joi.string().required().min(8).max(16).messages({
-    //   'string.base': 'Password must be a string',
-    //   'string.empty': 'Password is required',
-    //   'string.min': 'Password must be min of 8 characters',
-    //   'string.max': 'Password must be max of 16 characters',
-    // }),
+  
   });
   const {firstName,lastName,email,phoneNumber,password} = req.body
   const {error} = validation.validate({firstName,lastName,email,phoneNumber,password}, {abortEarly:false})

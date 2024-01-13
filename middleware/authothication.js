@@ -21,13 +21,18 @@ const authenticate = async(req,res,next)=>{
                 error:"user not found"
             })
         }
+        if (user.blackList.includes(token)) {
+            return res.status(400).json({
+                error:"user loggedOut"
+            })
+        }
         req.user = decodeToken
         next()
         
     } catch (error) {
         if (error instanceof jwt.JsonWebTokenError) {
             return res.status(400).json({
-                error:"User logged out"
+                error:"session TimeOut"
             })
         }
         res.status(500).json({

@@ -2,7 +2,6 @@ const userModel = require("../models/userModel")
 require("dotenv").config()
 const bcrypt = require('bcrypt')
 const jwt = require("jsonwebtoken")
-const validation = require("../Utils/validation")
 
 exports.registerUser = async(req,res)=>{
     try {
@@ -26,24 +25,24 @@ exports.registerUser = async(req,res)=>{
         const saltPass = bcrypt.genSaltSync(10)
         const hashPass = bcrypt.hashSync(password&&comfirmPassword,saltPass)
         // register the user
-        const register = await userModel.create({
-            firstName,
-            lastName,
-            email,
+        const newUser = await userModel.create({
+            firstName:firstName.charAt(0).toUpperCase() + firstName.slice(1),
+            lastName:lastName.charAt(0).toUpperCase() + lastName.slice(1),
+            email:email.toLowerCase(),
             phoneNumber,
             password:hashPass,
             comfirmPassword:hashPass
         })
         // throw a failure message
-        if(!register){
+        if(!newUser){
             return res.status(400).json({
                 error:"error creating your account"
             })
         }
         // success message
         res.status(200).json({
-            message:"successfully created an account",
-            data: register 
+            message:`HELLO👋 ${newUser.firstName.toUpperCase()} ${newUser.lastName.slice(0,1).toUpperCase()} YOUR ACCOUNT HAS BEEN CREATED SUCCESSFULLY🎉🥳`,
+            data: newUser 
         })
 
     } catch (err) {
@@ -59,7 +58,7 @@ exports.signIn = async(req,res)=>{
         // get the requirement
         const {email,password} = req.body
         // check if the user is existing on the platform
-        const userExist = await userModel.findOne({email})
+        const userExist = await userModel.findOne({email:email.toLowerCase()})
         if(!userExist){
             return res.status(404).json({
                 error:"email does not exist"
@@ -101,9 +100,13 @@ exports.signOut = async(req,res)=>{
                 error:"Authorization failed: token not found"
             })
         }
-        // terminate the token
-        const terminateToken = jwt.verify(token,process.env.JWT_KEY)
-        terminateToken.exp = 1
+        // get the users id
+        const id = req.user.userId
+        // find the user
+        const user = await userModel.findById(id)
+        // push the user to the black list and save
+        user.blackList.push(token)
+        await user.save()
         // show a success response
         res.status(200).json({
             message:"successfully logged out"
@@ -128,7 +131,7 @@ exports.allUsers= async(req,res)=>{
         }
         // return all available user
         res.status(200).json({
-            message:"here are the user available",
+            message:`There are ${allUsers.length} user available`,
             data:allUsers
         })
         

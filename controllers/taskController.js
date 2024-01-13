@@ -43,14 +43,6 @@ exports.addTask = async(req,res)=>{
         })
     }
 } 
-// extract relevant information for each task
-// const extractedTasks = allTask.map(task => ({
-//     title: task.title,
-//     description: task.desc,
-//     Name: task.user.firstName,
-//     subTask: task.subTask.length > 0 ? task.subTask[0].subTask : null,
-//     status: task.status.status
-// }))
 
 exports.allTask= async(req,res)=>{
     try {
@@ -74,7 +66,7 @@ exports.allTask= async(req,res)=>{
       
         // return all available task
         res.status(200).json({
-            message:"here are the task available",
+            message:`There are ${allTask.length} task available`,
             data:extractedTasks
         })
         
@@ -101,13 +93,13 @@ exports.getOneTask = async(req,res)=>{
         const extractedTasks = {
             title: task.title,
             description: task.desc,
-            Name: `${task.user.firstName} ${task.user.lastName}`,
+            Name: task.user.firstName,
             subTask: task.subTask.map(sub => sub.subTask),
             status: task.status.status
         }
         // return all available status
         res.status(200).json({
-            message:"here are the task available",
+            message:"here is the task",
             data:extractedTasks
         })
         

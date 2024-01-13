@@ -30,7 +30,7 @@ exports.getAllStatus = async(req,res)=>{
         }
         // return all available status
         res.status(200).json({
-            message:"here are the status available",
+            message:`There are ${allStatus.length} status available`,
             data: allStatus
         })
         
