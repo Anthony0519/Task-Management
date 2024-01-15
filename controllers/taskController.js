@@ -57,6 +57,7 @@ exports.allTask= async(req,res)=>{
 
         // extract relevant information for each task
         const extractedTasks = allTask.map(task => ({
+            Id: task._id,
             title: task.title,
             description: task.desc,
             Name: task.user.firstName,
@@ -91,6 +92,7 @@ exports.getOneTask = async(req,res)=>{
         }
          // extract relevant information for the task
         const extractedTasks = {
+            Id: task._id,
             title: task.title,
             description: task.desc,
             Name: task.user.firstName,
